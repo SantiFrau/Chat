@@ -1,32 +1,28 @@
+import { Routes, Route, Navigate } from "react-router-dom"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
 import { useContext, useEffect } from "react"
 import { UserContext } from "./components/user-context"
-import {userPrueba} from "./components/chats.js"
-import Nav from "./components/nav"
-import Chats from "./components/chats.jsx"
-import ChatSelected from "./components/chatSelected"
-import { chats } from './components/chats';
+import { chats, userPrueba } from "./components/chats.js"
+import ChatApp from "./pages/ChatApp"
+import './index.css'
+
 
 function App() {
-   
-    const {user,setUser,setChats} = useContext(UserContext)
+  const { user ,setChats,setUser} = useContext(UserContext)
   
-   useEffect(()=>{
-    setUser(userPrueba)
-    setChats(chats)
-     },[])
+  useEffect(()=>{
+  
+  
+  })
 
   return (
-   
-    <div className="w-full h-screen flex flex-row">
-        
-        <Nav></Nav>
-        
-        <Chats></Chats>
-  <ChatSelected></ChatSelected>
-
-
-
-    </div>
+    <Routes>
+      <Route path="/login" element={!user ? <Login /> : <Navigate to="/chat" />} />
+      <Route path="/register" element={!user ? <Register /> : <Navigate to="/chat" />} />
+      <Route path="/chat" element={user ? <ChatApp /> : <Navigate to="/login" />} />
+      <Route path="*" element={<Navigate to={user ? "/chat" : "/login"} />} />
+    </Routes>
   )
 }
 

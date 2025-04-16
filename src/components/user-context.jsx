@@ -4,7 +4,7 @@ import { createContext, useState } from 'react';
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user,setUser] = useState({})
+  const [user,setUser] = useState(null)
   const [chats,setChats] = useState([])
   const [selectedChat,setSelectedChat] = useState({})
   const [mensajes,setMensajes] = useState([])
