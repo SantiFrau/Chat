@@ -129,3 +129,9 @@ export const userPrueba = {
 }
 
 //https://imgs.search.brave.com/rwE-hC6ESt3hBJZhImPkb-KvU26bLDKVe-OKv1y50-M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzE0LzQz/LzU1LzE0NDM1NWQ3/YjM2YzVmNjQ2NDM1/NDIzNzk4MjgxY2U5/LmpwZw
+
+/*Message: {
+  description: "¿Terminaste el trabajo?",
+  date: "2025-04-14 08:15:22",
+  mine: true
+}*/

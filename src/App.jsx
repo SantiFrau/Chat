@@ -6,15 +6,24 @@ import { UserContext } from "./components/user-context"
 import { chats, userPrueba } from "./components/chats.js"
 import ChatApp from "./pages/ChatApp"
 import './index.css'
+import { getUserFromToken } from "./utils/gets"
 
 
 function App() {
-  const { user ,setChats,setUser} = useContext(UserContext)
-  
-  useEffect(()=>{
+  const { user ,setChats , setUser} = useContext(UserContext)
   
   
-  })
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      getUserFromToken(token).then((user) => {
+        if (user) {
+          setUser(user);
+          
+        }
+      });
+    }
+  }, []);
 
   return (
     <Routes>
