@@ -10,67 +10,70 @@ export const UserProvider = ({ children }) => {
   const [selectedChat, setSelectedChat] = useState({});
   const [mensajes, setMensajes] = useState([]);
 
-  const socketRef = useRef(null); // Socket único
+  const selectedChatRef = useRef(selectedChat);
+  const socketRef = useRef(null); // Referencia persistente del socket
+  const initializedRef = useRef(false); // 👈 nueva bandera para evitar doble inicialización
+
+  useEffect(() => {
+    selectedChatRef.current = selectedChat;
+  }, [selectedChat]);
+
 
   useEffect(() => {
     const fetchData = async () => {
-      if (user && !socketRef.current) {
-        const token = localStorage.getItem("token");
+      // Solo para iniciar un socket en el caso de que react monte 2 veces el componente para evitar duplicidad en los mensajes
+      if (initializedRef.current || !user) return;
 
-        try {
-          const c = await GetChats(token);
-          setChats(c.chats);
+      initializedRef.current = true;
 
-          const newSocket = io("http://localhost:3001", {
-            extraHeaders: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+      const token = localStorage.getItem("token");
 
-          socketRef.current = newSocket;
+      try {
+        const c = await GetChats(token);
+        setChats(c.chats);
 
-          // Se une a las salas cuando se conecta
-          newSocket.on("connect", () => {
-            console.log("Socket conectado:", newSocket.id);
-            const chatsId = c.chats.map(chat => chat.chatid);
-            newSocket.emit("join", chatsId);
-          });
+        const newSocket = io("http://localhost:3001", {
+          extraHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-          // Escucha mensajes entrantes
-          newSocket.on("receive-message", ({ username, message }) => {
-            console.log("Nuevo mensaje de", username, ":", message);
+        socketRef.current = newSocket;
 
-            // Actualiza el chat con el nuevo último mensaje
-            setChats(prevChats => {
-              const updated = prevChats.map(chat =>
-                chat.user.username === username
-                  ? { ...chat, lastMessage: message }
-                  : chat
-              );
-              console.log("Chats actualizados:", updated);
-              return updated;
-            });
+        newSocket.on("connect", () => {
+          console.log("Socket conectado:", newSocket.id);
+          const chatsId = c.chats.map(chat => chat.chatid);
+          newSocket.emit("join", chatsId);
+        });
 
-            // Si está abierto ese chat, agregar el mensaje
-            if (selectedChat?.user?.username === username) {
-              setMensajes(prev => [...prev, { username, message }]);
-            }
-          });
+        newSocket.on("receive-message", ({ username, message }) => {
+          console.log("Nuevo mensaje de", username, ":", message);
 
-        } catch (error) {
-          console.error("Error al obtener los chats o conectar socket:", error);
-        }
+          setChats(prevChats =>
+            prevChats.map(chat =>
+              chat.user.username === username
+                ? { ...chat, lastMessage: message }
+                : chat
+            )
+          );
+
+          if (selectedChatRef.current?.user?.username === username) {
+            setMensajes(prev => [...prev, message]);
+          }
+        });
+
+      } catch (error) {
+        console.error("Error al obtener los chats o conectar socket:", error);
       }
     };
 
     fetchData();
 
-    // Cleanup al desmontar
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
-        console.log("Socket desconectado");
         socketRef.current = null;
+        initializedRef.current = false; // permitir reinicio si se desmonta
       }
     };
   }, [user]);
