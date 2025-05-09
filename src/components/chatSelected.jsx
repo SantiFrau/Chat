@@ -4,6 +4,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import Mensajes from "./mensajes";
 
 export default function ChatSelected() {
   const { selectedChat, socket, setMensajes, mensajes ,setChats} = useContext(UserContext);
@@ -69,15 +70,7 @@ export default function ChatSelected() {
             </div>
           </div>
 
-          <div className="w-full h-8/10 overflow-y-auto">
-            {mensajes.map((msg, index) => (
-              <div key={index} className={msg.mine ? "text-right" : "text-left"}>
-                <p className="bg-gray-300 p-2 rounded-lg inline-block">
-                  {msg.description}
-                </p>
-              </div>
-            ))}
-          </div>
+          <Mensajes mensajes={mensajes}></Mensajes>
 
           <form action="#" className="w-full h-1/10 flex items-center justify-center" onSubmit={handleclick}>
             <div className="relative w-9/10 p-3 rounded-full bg-blue-950 px-20 text-zinc-400">

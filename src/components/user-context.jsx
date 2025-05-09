@@ -16,6 +16,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     selectedChatRef.current = selectedChat;
+    setMensajes([]) // set messages whit api
   }, [selectedChat]);
 
 
