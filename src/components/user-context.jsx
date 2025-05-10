@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useRef } from 'react';
-import { GetChats } from '../utils/gets';
+import { GetChats, GetMessages } from '../utils/gets';
 import { io } from "socket.io-client";
 
 export const UserContext = createContext();
@@ -15,8 +15,24 @@ export const UserProvider = ({ children }) => {
   const initializedRef = useRef(false); // 👈 nueva bandera para evitar doble inicialización
 
   useEffect(() => {
+    const fetchData = async ({chatId}) =>{
+      const token = localStorage.getItem("token");
+      if(chatId && token){
+
+      const messages = await GetMessages({token,chatId})
+      console.log(messages)
+      if(messages?.success){
+        setMensajes(messages.messages)
+      }else{
+        setMensajes([])
+      }
+    }
+    }
+    
     selectedChatRef.current = selectedChat;
-    setMensajes([]) // set messages whit api
+    
+    fetchData({chatId:selectedChat.chatid})
+    
   }, [selectedChat]);
 
 
@@ -31,6 +47,7 @@ export const UserProvider = ({ children }) => {
 
       try {
         const c = await GetChats(token);
+        console.log(c.chats)
         setChats(c.chats);
 
         const newSocket = io("http://localhost:3001", {

@@ -63,3 +63,21 @@ export async function getUserFromToken(token) {
       return null;
     }
   }
+
+  export async function GetMessages({token,chatId}){
+    try {
+      const response = await fetch(`http://localhost:3001/chat/message/${chatId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) throw new Error("Token inválido");
+  
+      const messages = await response.json();
+      return messages;
+    } catch (error) {
+      console.error("Error al verificar token:", error);
+      return null;
+    }
+  }

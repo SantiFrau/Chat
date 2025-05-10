@@ -18,6 +18,7 @@ function App() {
     if (token) {
       getUserFromToken(token).then((user) => {
         if (user) {
+          console.log(user)
           setUser(user);
           
         }
