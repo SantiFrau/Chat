@@ -20,17 +20,12 @@ export const UserProvider = ({ children }) => {
       if(chatId && token){
 
       const messages = await GetMessages({token,chatId})
-      console.log(messages)
-      if(messages?.success){
-        setMensajes(messages.messages)
-      }else{
-        setMensajes([])
-      }
+      setMensajes(messages)
     }
     }
     
     selectedChatRef.current = selectedChat;
-    
+    console.log(selectedChatRef.current)
     fetchData({chatId:selectedChat.chatid})
     
   }, [selectedChat]);
@@ -47,8 +42,7 @@ export const UserProvider = ({ children }) => {
 
       try {
         const c = await GetChats(token);
-        console.log(c.chats)
-        setChats(c.chats);
+        setChats(c);
 
         const newSocket = io("http://localhost:3001", {
           extraHeaders: {
