@@ -53,8 +53,9 @@ export const UserProvider = ({ children }) => {
         socketRef.current = newSocket;
 
         newSocket.on("connect", () => {
-          console.log("Socket conectado:", newSocket.id);
-          const chatsId = c.chats.map(chat => chat.chatid);
+         
+          const chatsId = c.map(chat => chat.chatid);
+          console.log("a")
           newSocket.emit("join", chatsId);
         });
 
