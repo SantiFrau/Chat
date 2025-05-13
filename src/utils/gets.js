@@ -67,6 +67,7 @@ export async function getUserFromToken(token) {
   export async function GetMessages({token,chatId}){
     try {
       const response = await fetch(`http://localhost:3001/chat/message/${chatId}`, {
+        
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -88,17 +89,20 @@ export async function getUserFromToken(token) {
   }
 
   export async function CreateChat({token,username}){
+    
     try {
       const response = await fetch(`http://localhost:3001/chat/create/${username}`, {
+        method : "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
   
       if (!response.ok) throw new Error("Token inválido");
       console.log(response)
-      
-      return response.success
+       const res = await response.json()
+      return res.success
     } catch (error) {
       return null;
     }

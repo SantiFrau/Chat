@@ -1,3 +1,1 @@
 framer-motion aprender a usar para hacer animacione entre renderizados condicionales de react
-
-no crea el chat
